@@ -208,15 +208,10 @@ struct TBPopoverView: View {
                 .keyboardShortcut("q")
             }
         }
+        .frame(width: 240)
+        .fixedSize()
         #if DEBUG
-            /*
-             After several hours of Googling and trying various StackOverflow
-             recipes I still haven't figured a reliable way to auto resize
-             popover to fit all it's contents (pull requests are welcome!).
-             The following code block is used to determine the optimal
-             geometry of the popover.
-             */
-            .overlay(
+        .overlay(
                 GeometryReader { proxy in
                     debugSize(proxy: proxy)
                 }
@@ -224,7 +219,7 @@ struct TBPopoverView: View {
         #endif
             /* Use values from GeometryReader */
 //            .frame(width: 240, height: 276)
-            .padding(12)
+        .padding(12)
     }
 }
 
