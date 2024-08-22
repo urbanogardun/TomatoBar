@@ -78,6 +78,14 @@ private struct SettingsView: View {
                 .onChange(of: timer.showTimerInMenuBar) { _ in
                     timer.updateTimeLeft()
                 }
+            Toggle(isOn: $timer.toggleDoNotDisturb) {
+                Text(NSLocalizedString("SettingsView.toggleDoNotDisturb.label",
+                                       comment: "Toggle Do Not Disturb"))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .toggleStyle(.switch)
+            .help(NSLocalizedString("SettingsView.toggleDoNotDisturb.help",
+                                    comment: "Toggle Do Not Disturb hint"))
             Toggle(isOn: $launchAtLogin.isEnabled) {
                 Text(NSLocalizedString("SettingsView.launchAtLogin.label",
                                        comment: "Launch at login label"))
