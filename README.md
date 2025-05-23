@@ -42,6 +42,41 @@ This fork makes a couple additions/modifications:
 - Doesn't play sounds when volume is set to zero (fixes issues with e.g. multipoint bluetooth headphones)
 - Increases the minimum macOS version requirement to Monterey
 
+## Website Blocking
+TomatoBar now includes a website blocking feature that helps you stay focused during work sessions. When enabled, it blocks access to distracting websites like social media during your Pomodoro work intervals.
+
+### Features
+- Automatically blocks predefined websites during work sessions
+- Unblocks websites during rest periods
+- Works system-wide across all browsers
+- One-time setup - no repeated password prompts
+- Customizable block list
+
+### Default Blocked Websites
+The following websites are blocked by default:
+- twitter.com / x.com
+- instagram.com
+- youtube.com
+- reddit.com
+- tiktok.com
+- facebook.com
+
+### Setup
+1. Enable website blocking in TomatoBar settings
+2. On first use, you'll be prompted to set up password-free blocking
+3. Enter your admin password once for the initial setup
+4. TomatoBar can now block/unblock websites automatically without asking for passwords
+
+### How It Works
+TomatoBar uses the system's `/etc/hosts` file to redirect blocked domains to localhost (127.0.0.1), preventing access during work sessions. A helper script with sudoers configuration ensures smooth operation without repeated password prompts.
+
+### Managing Blocked Websites
+You can add or remove websites from the block list:
+1. Open TomatoBar settings
+2. Click "Manage Blocked Websites"
+3. Add new sites or remove existing ones
+4. Changes take effect on the next work session
+
 ## Integration with other tools
 ### Event log
 TomatoBar logs state transitions in JSON format to `~/Library/Containers/com.github.ivoronin.TomatoBar/Data/Library/Caches/TomatoBar.log`. Use this data to analyze your productivity and enrich other data sources.

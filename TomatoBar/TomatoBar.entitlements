@@ -12,6 +12,14 @@
 		<array>
 			<string>com.apple.shortcuts.run</string>
 		</array>
+		<key>com.apple.Safari</key>
+		<array>
+			<string>com.apple.Safari.get-url</string>
+		</array>
+		<key>com.google.Chrome</key>
+		<array>
+			<string>com.google.Chrome.get-url</string>
+		</array>
 	</dict>
 </dict>
 </plist>

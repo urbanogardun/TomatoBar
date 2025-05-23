@@ -144,6 +144,8 @@ extension DropdownDescribable {
 private struct SettingsView: View {
     @EnvironmentObject var timer: TBTimer
     @ObservedObject private var launchAtLogin = LaunchAtLogin.observable
+    @AppStorage("toggleWebsiteBlocking") private var toggleWebsiteBlocking = false
+    @State private var showingWebsiteBlockingSheet = false
 
     var body: some View {
         VStack {
@@ -204,6 +206,19 @@ private struct SettingsView: View {
             .toggleStyle(.switch)
             .help(NSLocalizedString("SettingsView.toggleDoNotDisturb.help",
                                     comment: "Toggle Do Not Disturb hint"))
+            Toggle(isOn: $toggleWebsiteBlocking) {
+                Text(NSLocalizedString("SettingsView.toggleWebsiteBlocking.label",
+                                       comment: "Block websites during work"))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .toggleStyle(.switch)
+            .help(NSLocalizedString("SettingsView.toggleWebsiteBlocking.help",
+                                    comment: "Block distracting websites during work sessions"))
+            Button(action: { showingWebsiteBlockingSheet = true }) {
+                Text(NSLocalizedString("SettingsView.manageBlockedWebsites.label",
+                                       comment: "Manage blocked websites"))
+            }
+            .disabled(!toggleWebsiteBlocking)
             Toggle(isOn: $timer.startTimerOnLaunch) {
                 Text(NSLocalizedString("SettingsView.startTimerOnLaunch.label",
                                        comment: "Start timer on launch label"))
@@ -217,6 +232,9 @@ private struct SettingsView: View {
             Spacer().frame(minHeight: 0)
         }
         .padding(4)
+        .sheet(isPresented: $showingWebsiteBlockingSheet) {
+            WebsiteBlockingView()
+        }
     }
 }
 
@@ -441,3 +459,88 @@ struct TBPopoverView: View {
         return Color.clear
     }
 #endif
+
+private struct WebsiteBlockingView: View {
+    @AppStorage("blockedWebsites") private var blockedWebsitesData: Data = Data()
+    @State private var blockedWebsites: [String] = []
+    @State private var newWebsite: String = ""
+    @State private var showingAuthorizationAlert = false
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        VStack {
+            Text("Manage Blocked Websites")
+                .font(.headline)
+                .padding(.top)
+            
+            List {
+                ForEach(blockedWebsites, id: \.self) { website in
+                    HStack {
+                        Text(website)
+                        Spacer()
+                        Button(action: { removeWebsite(website) }) {
+                            Image(systemName: "minus.circle.fill")
+                                .foregroundColor(.red)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+            
+            HStack {
+                TextField("Enter website (e.g., twitter.com)", text: $newWebsite)
+                    .onSubmit { addWebsite() }
+                Button("Add") { addWebsite() }
+                    .disabled(newWebsite.isEmpty)
+            }
+            .padding()
+            
+            HStack {
+                Button("Request Authorization") {
+                    Task {
+                        do {
+                            try await WebsiteBlockingHelper.requestAuthorization()
+                        } catch {
+                            showingAuthorizationAlert = true
+                        }
+                    }
+                }
+                .disabled(WebsiteBlockingHelper.isAuthorized())
+                
+                Spacer()
+                
+                Button("Done") { dismiss() }
+                    .keyboardShortcut(.defaultAction)
+            }
+            .padding()
+        }
+        .frame(width: 400, height: 300)
+        .onAppear { loadWebsites() }
+        .onDisappear { saveWebsites() }
+        .alert("Website Blocking Active", isPresented: $showingAuthorizationAlert) {
+            Button("OK") { }
+        } message: {
+            Text("TomatoBar will monitor your browser and remind you when you visit blocked sites during work sessions. No admin password needed!")
+        }
+    }
+    
+    private func loadWebsites() {
+        blockedWebsites = UserDefaults.standard.blockedWebsites
+    }
+    
+    private func saveWebsites() {
+        UserDefaults.standard.blockedWebsites = blockedWebsites
+    }
+    
+    private func addWebsite() {
+        let trimmed = newWebsite.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty && !blockedWebsites.contains(trimmed) {
+            blockedWebsites.append(trimmed)
+            newWebsite = ""
+        }
+    }
+    
+    private func removeWebsite(_ website: String) {
+        blockedWebsites.removeAll { $0 == website }
+    }
+}

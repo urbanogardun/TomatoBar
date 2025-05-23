@@ -212,6 +212,14 @@ class TBTimer: ObservableObject {
                 _ = DoNotDisturbHelper.shared.set(state: !paused)
             }
         }
+        
+        if UserDefaults.standard.toggleWebsiteBlocking, stateMachine.state == .work {
+            if paused {
+                WebsiteBlockingHelper.shared.disableBlocking()
+            } else {
+                WebsiteBlockingHelper.shared.enableBlocking()
+            }
+        }
 
         if paused {
             if stateMachine.state == .work {
@@ -346,6 +354,9 @@ class TBTimer: ObservableObject {
                 }
             }
         }
+        if UserDefaults.standard.toggleWebsiteBlocking {
+            WebsiteBlockingHelper.shared.enableBlocking()
+        }
     }
 
     private func onWorkEnd(context _: TBStateMachine.Context) {
@@ -353,6 +364,9 @@ class TBTimer: ObservableObject {
         player.playDing()
         DispatchQueue.main.async(group: notificationGroup) {
             _ = DoNotDisturbHelper.shared.set(state: false)
+        }
+        if UserDefaults.standard.toggleWebsiteBlocking {
+            WebsiteBlockingHelper.shared.disableBlocking()
         }
     }
 
