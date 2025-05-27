@@ -40,9 +40,15 @@ class TBLogger {
         encoder.dateEncodingStrategy = .secondsSince1970
 
         let fileManager = FileManager.default
-        let logPath = fileManager
-            .urls(for: .cachesDirectory, in: .userDomainMask)
+        
+        let appSupportURL = fileManager
+            .urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first!
+            .appendingPathComponent("TomatoBar")
+        
+        try? fileManager.createDirectory(at: appSupportURL, withIntermediateDirectories: true)
+        
+        let logPath = appSupportURL
             .appendingPathComponent(logFileName)
             .path
 

@@ -417,6 +417,17 @@ struct TBPopoverView: View {
             Group {
                 Button {
                     NSApp.activate(ignoringOtherApps: true)
+                    showStatisticsWindow()
+                } label: {
+                    Text(NSLocalizedString("TBPopoverView.statistics.label",
+                                           comment: "Statistics label"))
+                    Spacer()
+                    Text("⌘ S").foregroundColor(Color.gray)
+                }
+                .buttonStyle(.plain)
+                .keyboardShortcut("s")
+                Button {
+                    NSApp.activate(ignoringOtherApps: true)
                     NSApp.orderFrontStandardAboutPanel()
                 } label: {
                     Text(NSLocalizedString("TBPopoverView.about.label",
@@ -543,4 +554,14 @@ private struct WebsiteBlockingView: View {
     private func removeWebsite(_ website: String) {
         blockedWebsites.removeAll { $0 == website }
     }
+}
+
+private func showStatisticsWindow() {
+    let statisticsView = StatisticsView()
+    let hostingController = NSHostingController(rootView: statisticsView)
+    let window = NSWindow(contentViewController: hostingController)
+    window.title = "TomatoBar Statistics"
+    window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
+    window.center()
+    window.makeKeyAndOrderFront(nil)
 }

@@ -40,7 +40,26 @@ This fork makes a couple additions/modifications:
 - Turns the volume display into a percentage, adds long tap gesture on the percentage to mute/unmute (in addition to the existing double tap reset)
 - Adds an option for a full screen mask (taken from https://github.com/ivoronin/TomatoBar/pull/65)
 - Doesn't play sounds when volume is set to zero (fixes issues with e.g. multipoint bluetooth headphones)
-- Increases the minimum macOS version requirement to Monterey
+- Adds comprehensive work statistics with visual graphs (hourly, daily, weekly, monthly)
+- Increases the minimum macOS version requirement to macOS 14.0 (Sonoma)
+
+## Work Statistics
+TomatoBar tracks your work sessions and provides beautiful visual statistics to help you understand your productivity patterns.
+
+### Features
+- Visual graphs showing work patterns over time
+- Four different time views: Hourly (today), Daily (30 days), Weekly (12 weeks), Monthly (12 months)
+- Native macOS charts with smooth animations
+- Automatic tracking - no manual input needed
+- Access via menu bar (⌘S) or Statistics menu item
+
+### How to Use
+1. Click the TomatoBar icon in your menu bar
+2. Press ⌘S or select "Statistics" from the menu
+3. Use the segmented control to switch between time periods
+4. View your work patterns and total hours for each period
+
+The statistics are generated from your work session history stored in the log file, so you'll see all your historical data immediately.
 
 ## Website Blocking
 TomatoBar now includes a website blocking feature that helps you stay focused during work sessions. When enabled, it blocks access to distracting websites like social media during your Pomodoro work intervals.
@@ -79,7 +98,7 @@ You can add or remove websites from the block list:
 
 ## Integration with other tools
 ### Event log
-TomatoBar logs state transitions in JSON format to `~/Library/Containers/com.github.ivoronin.TomatoBar/Data/Library/Caches/TomatoBar.log`. Use this data to analyze your productivity and enrich other data sources.
+TomatoBar logs state transitions in JSON format to `~/Library/Application Support/TomatoBar/TomatoBar.log`. This data is used by the built-in statistics feature and can also be used to analyze your productivity and enrich other data sources. The logs are stored permanently in Application Support and won't be deleted by system cleanup.
 ### Controlling the timer
 TomatoBar can be controlled using `tomatobar://` URLs. To start or stop the timer from the command line, use `open tomatobar://startStop`. To pause or resume use `open tomatobar://pauseResume`. To skip use `open tomatobar://skip`. To add a minute use `open tomatobar://addMinute`
 
